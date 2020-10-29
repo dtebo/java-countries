@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -16,6 +17,18 @@ public class CountryController {
     @Autowired
     CountryRepository countryRepository;
 
+    public List<Country> filterCountries(List<Country> countryList, CheckCountry tester){
+        List<Country> testList = new ArrayList<>();
+
+        for(Country c : testList){
+            if(tester.test(c)){
+                testList.add(c);
+            }
+        }
+
+        return testList;
+    }
+
     //http://localhost:2019/names/all
     @GetMapping(value = "/names/all", produces = "application/json")
     public ResponseEntity<?> listAllCountries(){
@@ -25,7 +38,15 @@ public class CountryController {
         return new ResponseEntity<>(countryList, HttpStatus.OK);
     }
 
-    //http://localhost:2019/names/start/u
+    //http://localhost:2019/names/start/{letter}
+    public ResponseEntity<?> findCountriesThatStartWith(@PathVariable char letter){
+        List<Country> countryList = new ArrayList<>();
+        countryRepository.findAll().iterator().forEachRemaining(countryList::add);
+
+        List<Country> rtnList = filterCountries(countryList, c -> c.getName() == letter);
+
+        return new ResponseEntity<>(rtnList, HttpStatus.OK);
+    }
 
     //http://localhost:2019/population/total
     @GetMapping(value = "/population/total", produces = "application/json")
