@@ -90,4 +90,28 @@ public class CountryController {
 
         return new ResponseEntity<>(highestPopulationCountry, HttpStatus.OK);
     }
+
+    //http://localhost:2019/population/median
+    @GetMapping(value = "/population/median", produces = "application/json")
+    public ResponseEntity<?> getMedianPopulationCountry(){
+        List<Country> countryList = new ArrayList<>();
+        countryRepository.findAll().iterator().forEachRemaining(countryList::add);
+
+        countryList.sort((c1, c2) -> (int)(c2.getPopulation() - c1.getPopulation()));
+
+        Country medianPopulationCountry = new Country();
+
+        if(countryList.size() % 2 == 0){
+            //Even sized list
+            //Grab the country just after the one in the middle
+            medianPopulationCountry = countryList.get((countryList.size() / 2 + 1));
+        }
+        else{
+            //Odd sized list
+            //Grab the country before the country in the middle
+            medianPopulationCountry = countryList.get((countryList.size() / 2 - 1));
+        }
+
+        return new ResponseEntity<>(medianPopulationCountry, HttpStatus.OK);
+    }
 }
