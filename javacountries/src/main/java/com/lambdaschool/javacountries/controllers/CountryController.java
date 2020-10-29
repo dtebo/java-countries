@@ -57,5 +57,15 @@ public class CountryController {
     }
 
     //http://loclahost:2019/population/max
+    @GetMapping(value = "/population/max", produces = "application/json")
+    public ResponseEntity<?> getHighestPopulationCountry(){
+        List<Country> countryList = new ArrayList<>();
+        countryRepository.findAll().iterator().forEachRemaining(countryList::add);
 
+        countryList.sort((c1, c2) -> (int)(c2.getPopulation() - c1.getPopulation()));
+
+        Country highestPopulationCountry = countryList.get(0);
+
+        return new ResponseEntity<>(highestPopulationCountry, HttpStatus.OK);
+    }
 }
