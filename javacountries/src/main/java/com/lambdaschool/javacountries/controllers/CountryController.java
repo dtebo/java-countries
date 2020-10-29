@@ -27,7 +27,34 @@ public class CountryController {
 
     //http://localhost:2019/names/start/u
 
+    //http://localhost:2019/population/total
+    @GetMapping(value = "/population/total", produces = "application/json")
+    public ResponseEntity<?> getTotalPopulation(){
+        List<Country> countryList = new ArrayList<>();
+        countryRepository.findAll().iterator().forEachRemaining(countryList::add);
+
+        double total = 0.0;
+        for(Country c : countryList){
+            total += c.getPopulation();
+        }
+
+        System.out.println("The Total Population is " + total);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     //http://localhost:2019/population/min
+    @GetMapping(value = "/population/min", produces = "application/json")
+    public ResponseEntity<?> getLowestPopulationCountry(){
+        List<Country> countryList = new ArrayList<>();
+        countryRepository.findAll().iterator().forEachRemaining(countryList::add);
+
+        countryList.sort((c1, c2) -> (int)(c1.getPopulation() - c2.getPopulation()));
+
+        Country lowestPopulationCountry = countryList.get(0);
+
+        return new ResponseEntity<>(lowestPopulationCountry, HttpStatus.OK);
+    }
 
     //http://loclahost:2019/population/max
 

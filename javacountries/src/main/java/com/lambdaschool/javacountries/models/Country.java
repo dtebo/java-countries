@@ -24,7 +24,7 @@ public class Country {
     public Country(){
 
     }
-    
+
     public long getCountryid() {
         return countryid;
     }
