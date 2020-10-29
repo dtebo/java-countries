@@ -20,7 +20,7 @@ public class CountryController {
     public List<Country> filterCountries(List<Country> countryList, CheckCountry tester){
         List<Country> testList = new ArrayList<>();
 
-        for(Country c : testList){
+        for(Country c : countryList){
             if(tester.test(c)){
                 testList.add(c);
             }
@@ -39,11 +39,12 @@ public class CountryController {
     }
 
     //http://localhost:2019/names/start/{letter}
+    @GetMapping(value = "/names/start/{letter}", produces = "application/json")
     public ResponseEntity<?> findCountriesThatStartWith(@PathVariable char letter){
         List<Country> countryList = new ArrayList<>();
         countryRepository.findAll().iterator().forEachRemaining(countryList::add);
 
-        List<Country> rtnList = filterCountries(countryList, c -> c.getName() == letter);
+        List<Country> rtnList = filterCountries(countryList, c -> c.getName().charAt(0) == letter);
 
         return new ResponseEntity<>(rtnList, HttpStatus.OK);
     }
